@@ -1,0 +1,42 @@
+﻿@model  Models.mResponseChat
+
+
+@if (Model.TypeResponse)
+{
+    <div id="cm-msg-0" class="chat-msg bot" style="display: block;">
+        <div class="cm-msg-text">
+            @Model.MessageResponse
+            <ul class="chatbox-options">
+                <li>@Model.Functionality.FirstOrDefault().URL</li>
+            </ul>
+        </div>
+    </div>
+    <div class='chat-rate'>
+        Te resultó útil esta respuesta?
+        @using (Ajax.BeginForm("SetEffectivenessMeasurement", new AjaxOptions { HttpMethod = "POST", OnSuccess = "ResponseEffectivenessMeasurement", OnFailure = "" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.Functionality.FirstOrDefault().FunctionalityID)
+            @Html.Hidden("UserID")
+            @Html.Hidden("Like")
+            @Html.Hidden("Dislike")
+            <i class="icon-thumbs-up"></i>
+            <i class="icon-thumbs-down"></i>
+            <button type="submit">a</button>
+        }
+    </div>
+}
+else
+{
+    <div id="cm-msg-0" class="chat-msg bot" style="display: block;">
+        <div class="cm-msg-text">
+            @Model.MessageResponse
+            <ul class="chatbox-options">
+                @foreach (Models.mFunctionality item in ViewBag.Funtionalitys)
+                {
+                    <li data-value="@item.FunctionalityID">@item.Name</li>
+                }
+            </ul>
+        </div>
+    </div>
+}

@@ -1,5 +1,4 @@
-﻿
-@model Chatbot.Models.RequestChat
+﻿@model  Models.mRequestChat
 
 <div class="chat-circle-container animate-bounce">
     <div class="chat-circle">
@@ -27,9 +26,9 @@
             <p>Hola, <strong>@Html.DisplayFor(x => x.User.Name)</strong>, soy Nombre Asistente y estoy aquí para ayudarte a encontrar lo que necesites.</p>
             <p>Comencemos eligiendo una funcionalidad:</p>
             <ul class="chatbox-options">
-                @foreach (Chatbot.Models.Functionality item in ViewBag.Funtionalitys)
+                @foreach (Models.mFunctionality item in ViewBag.Funtionalitys)
                 {
-                    <li data-value="@item.FunctionalityID">@item.Description</li>
+                <li data-value="@item.FunctionalityID">@item.Name</li>
                 }
             </ul>
         </div>
@@ -38,27 +37,16 @@
             <div id="cm-msg-0" class="chat-msg bot" style="display: block;">
                 <div class="cm-msg-text">Dime en qué puedo ayudarte<span class="chat-topic"> con respecto a <strong class="chat-topic-selected"></strong></span>.</div>
             </div>
-
-            <div id="cm-msg-0" class="chat-msg bot" style="display: block;">
-                <div class="cm-msg-text">
-                    <div class="typing-indicator">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
         <div class="chat-input">
             @using (Ajax.BeginForm("GetResponse", "ChatController", new AjaxOptions { HttpMethod = "POST", OnBegin = "BeginSendRequest", OnSuccess = "ResponseMessageBot" }, new { @class = "chat-input-form", @name = "chat-input", @id = "chat-input-form" }))
             {
-                @Html.AntiForgeryToken()
-                @Html.HiddenFor(x => x.User.UserID)
-                @Html.HiddenFor(x => x.FunctionalityID)
-                @Html.TextBoxFor(x => x.Request, new { @id = "chat-input", @placeholder = "Escribe aquí tu mensaje...", @autocomplete = "off" })
-                <button type="submit" class="chat-submit" id="chat-submit"><i class="icon-arrow-thin-right"></i></button>
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(x => x.User.UserID)
+            @Html.HiddenFor(x => x.FunctionalityID)
+            @Html.TextBoxFor(x => x.Request, new { @id = "chat-input", @placeholder = "Escribe aquí tu mensaje...", @autocomplete = "off" })
+            <button type="submit" class="chat-submit" id="chat-submit"><i class="icon-arrow-thin-right"></i></button>
             }
         </div>
     </div>
@@ -73,10 +61,10 @@
 
     function BeginSendRequest() {
         var msg = $('#chat-input').val();
-        if (msg.trim() == '' || $('#FunctionalityID').val() == 0)
+        if (msg.trim() == '' || $('#chat-input-form #FunctionalityID').val() == 0)
             return false;
         else {
-            RequestMessgeUser(msg); /*ResponseWaitEffect();*/
+            RequestMessgeUser(msg);
             return true;
         }
     }
@@ -93,49 +81,56 @@
         $('#cm-msg-' + msg_id).hide().fadeIn(300);
         $('#chat-input').val('');
         $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+        //$('#FunctionalityID').val(0);
     };
 
-    function ResponseMessageBot() {
-        msg_id++;
-        var str = "";
-        str += "<div id='cm-msg-" + msg_id + "' class='chat-msg bot' style='display: block;'>";
-        str += "	<div class='cm-msg-text'>";
-        str += "		Encontré los siguientes enlaces, espero que sean de ayuda.";
-        str += "		<ul class='chatbox-options'>";
-        str += "			<li>FAQ</li>";
-        str += "			<li>Entrenamiento</li>";
-        str += "			<li>Guías paso a paso</li>";
-        str += "			<li>Consultas</li>";
-        str += "			<li>Gestión de usuarios</li>";
-        str += "		</ul>";
-        str += "	</div>";
-        str += "</div>";
-        str += "<div class='chat-rate'>";
-        str += "	Te resultó útil esta respuesta?";
-        str += "	<i class='icon-thumbs-up'></i>";
-        str += "	<i class='icon-thumbs-down'></i>";
-        str += "</div>";
-        $('.chat-logs').append(str);
-        $('#cm-msg-' + msg_id + ',#cm-msg-' + msg_id + ' + .chat-rate').hide().fadeIn(300);
+    function ResponseMessageBot(rsp) {
+        //msg_id++;
+        //var str = "";
+        //str += "<div id='cm-msg-" + msg_id + "' class='chat-msg bot' style='display: block;'>";
+        //str += "	<div class='cm-msg-text'>";
+        //str += rsp.responseChat.MessageResponse;
+        //if (rsp.responseChat.TypeResponse) {
+        //    str += "		<ul class='chatbox-options'>";
+        //    str += "			<li>" + rsp.responseChat.Functionality.Name + "</li>";
+        //    str += "		</ul>";
+        //}
+        //str += "	</div>";
+        //str += "</div>";
+        //if (rsp.responseChat.TypeResponse) {
+        //    str += "<div class='chat-rate'>";
+        //    str += "	Te resultó útil esta respuesta?";
+        //    str += "	<i class='icon-thumbs-up'></i>";
+        //    str += "	<i class='icon-thumbs-down'></i>";
+        //    str += "</div>";
+        //}
+        $('.chat-logs').append(rsp);
+        //$('#cm-msg-' + msg_id + ',#cm-msg-' + msg_id + ' + .chat-rate').hide().fadeIn(300);
         $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
     };
 
-    //function ResponseWaitEffect() {
-    //    msg_id++;
-    //    var str = '';
-    //    str += "<div id='cm-msg-" + msg_id + "' class='chat-msg bot' style='display: block;'>";
-    //    str += "    <div class='cm-msg-text'>";
-    //    str += "        <div class'typing-indicator'>";
-    //    str += "            <span></span>";
-    //    str += "            <span></span>";
-    //    str += "            <span></span>";
-    //    str += "        </div>";
-    //    str += "    </div>";
-    //    str += "</div>";
-    //    $('.chat-logs').append(str);
-    //    $('#cm-msg-' + msg_id + ',#cm-msg-' + msg_id + ' + .chat-rate').hide().fadeIn(300);
-    //    $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
-    //}
+    function ResponseEffectivenessMeasurement(rsp) {
+        if (rsp) {
+            msg_id++;
+            var str = "";
+            str += "<div id='cm-msg-" + msg_id + "' class='chat-msg bot' style='display: block;'>";
+            str += "	<div class='cm-msg-text'>";
+            str += "		<p>Comencemos eligiendo una funcionalidad:</p>";
+            str += "		<ul class='chatbox-options'>";
+            rsp.forEach(function (element) {
+                str += "	    <li data-value='" + element.FunctionalityID + "'>" + element.Name + "</li>";
+            });
+            str += "		</ul>";
+            str += "	</div>";
+            str += "</div>";
+
+            $('.chat-logs').append(str);
+
+            $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+        } else {
+            console.log("is null");
+        }
+    }
 
     $('.chat-circle').click(function () {
         $('.chat-circle svg').toggleClass('chatbox-icon-hide');
