@@ -7,7 +7,7 @@
         <div class="cm-msg-text">
             @Model.MessageResponse
             <ul class="chatbox-options">
-                <li>@Model.Functionality.FirstOrDefault().URL</li>
+                <li><a href="@Model.Functionality.FirstOrDefault().URL" target="_blank">@Model.Functionality.FirstOrDefault().Description</a></li>
             </ul>
         </div>
     </div>

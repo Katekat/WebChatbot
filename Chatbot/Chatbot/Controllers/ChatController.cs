@@ -58,7 +58,7 @@ namespace Chatbot.Controllers
                 {
                     responseChat.TypeResponse = true;
                     responseChat.MessageResponse = "Encontré estos resultados para tu consulta";
-                    responseChat.Functionality = Lrequest;
+                    responseChat.Functionality = Lrequest.OrderByDescending(x=>x.Coincidencia).ToList();
                 }
                 return PartialView("_ResponseMessage", responseChat);
             }
