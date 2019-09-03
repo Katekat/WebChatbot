@@ -23,7 +23,7 @@ namespace Chatbot.Controllers
         {
             try
             {
-                ViewBag.Funtionalitys = GetFunctionalits();
+                ViewBag.Categories = GetCategories();
                 return PartialView("_ChatBot", new mRequestChat() { User = new mUser() { UserID = 1, Name = "Luis" } });
             }
             catch (Exception ex)
@@ -31,6 +31,7 @@ namespace Chatbot.Controllers
                 throw ex;
             }
         }
+    
 
         [HttpPost]
         [ValidateInput(true)]
@@ -44,7 +45,8 @@ namespace Chatbot.Controllers
                 ViewData["Like"] = false;
                 ViewData["Dislike"] = false;
 
-                Lrequest = acBot.Getanswer(requestChat.Request, Convert.ToInt16(requestChat.FunctionalityID));
+                string pQuestion = RemoveDiacritics(requestChat.Request);
+                Lrequest = acBot.Getanswer(pQuestion, Convert.ToInt16(requestChat.FunctionalityID));
                 mResponseChat responseChat = new mResponseChat();
 
                 if (Lrequest.Count == 0)
@@ -52,13 +54,26 @@ namespace Chatbot.Controllers
                     responseChat.TypeResponse = false;
                     responseChat.MessageResponse = " No encontré resultados para tu consulta. Prueba ingresando otra consulta " +
                         "o seleccionando otra funcionalidad. Si no, puedes enviar un mensaje a nuestros asesores, que te responderán dentro de las próximas 24 hs";
-                    ViewBag.Funtionalitys = GetFunctionalits();
+                    ViewBag.Categories = GetCategories();
                 }
                 else
                 {
                     responseChat.TypeResponse = true;
                     responseChat.MessageResponse = "Encontré estos resultados para tu consulta";
-                    responseChat.Functionality = Lrequest.OrderByDescending(x=>x.Coincidencia).ToList();
+
+                    var m = from word in Lrequest
+                            where Convert.ToDecimal(word.Coincidencia) == 100
+                            select word;
+                    if (m.Count() >= 1)
+                    {
+                        responseChat.Functionality = m.ToList();
+                    }
+                    else
+                    {
+                        responseChat.Functionality = Lrequest.OrderByDescending(x => x.Coincidencia).Take(3).ToList();// maximo 3 respuesa al usuario
+
+                    }
+
                 }
                 return PartialView("_ResponseMessage", responseChat);
             }
@@ -70,13 +85,16 @@ namespace Chatbot.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult SetEffectivenessMeasurement(mEffectivenessMeasurement effectiveness)
+        public JsonResult SetEffectivenessMeasurement(long pUserID, long pFunctionalityID, bool pLike)
         {
             try
             {
-                if (!effectiveness.Like)
+
+                bool resp = acBot.SaveAnswer(pUserID, pFunctionalityID, pLike);
+                if (resp)
                 {
-                    return Json(GetFunctionalits(), JsonRequestBehavior.AllowGet);
+
+                    return Json(new { isSatisfactorio = true, pUserID, pFunctionalityID, pLike }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -89,8 +107,9 @@ namespace Chatbot.Controllers
             }
         }
 
+
         /// <summary>
-        /// Por probar pasar la cadena por aqui antes de enviarla al acceso a datos
+        ///  pasar la cadena por aqui antes de enviarla al acceso a datos
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
@@ -109,18 +128,10 @@ namespace Chatbot.Controllers
             return stringBuilder.ToString();
         }
 
-        private List<mFunctionality> GetFunctionalits()
+        private List<mCategoty> GetCategories()
         {
-            List<mFunctionality> functionalitys = new List<mFunctionality>();
-            functionalitys.Add(new mFunctionality() { FunctionalityID = 1, Name = "FAQ", Description = "", URL = string.Empty });
-            functionalitys.Add(new mFunctionality() { FunctionalityID = 2, Name = "Entrenamiento", Description = "", URL = string.Empty });
-            functionalitys.Add(new mFunctionality() { FunctionalityID = 3, Name = "Guías paso a paso", Description = "", URL = string.Empty });
-            functionalitys.Add(new mFunctionality() { FunctionalityID = 4, Name = "Consultas", Description = "", URL = string.Empty });
-            functionalitys.Add(new mFunctionality() { FunctionalityID = 5, Name = "Gestión de usuarios", Description = "", URL = string.Empty });
-            functionalitys.Add(new mFunctionality() { FunctionalityID = 6, Name = "Otros", Description = "", URL = string.Empty });
-            return functionalitys;
+            return acBot.Getcategories();
         }
-
 
 
     }

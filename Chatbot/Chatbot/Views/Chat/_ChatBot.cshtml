@@ -26,9 +26,9 @@
             <p>Hola, <strong>@Html.DisplayFor(x => x.User.Name)</strong>, soy Nombre Asistente y estoy aquí para ayudarte a encontrar lo que necesites.</p>
             <p>Comencemos eligiendo una funcionalidad:</p>
             <ul class="chatbox-options">
-                @foreach (Models.mFunctionality item in ViewBag.Funtionalitys)
+                @foreach (Models.mCategoty item in ViewBag.Categories)
                 {
-                <li data-value="@item.FunctionalityID">@item.Name</li>
+                    <li data-value="@item.CategoryID">@item.Name</li>
                 }
             </ul>
         </div>
@@ -42,11 +42,11 @@
         <div class="chat-input">
             @using (Ajax.BeginForm("GetResponse", "ChatController", new AjaxOptions { HttpMethod = "POST", OnBegin = "BeginSendRequest", OnSuccess = "ResponseMessageBot" }, new { @class = "chat-input-form", @name = "chat-input", @id = "chat-input-form" }))
             {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(x => x.User.UserID)
-            @Html.HiddenFor(x => x.FunctionalityID)
-            @Html.TextBoxFor(x => x.Request, new { @id = "chat-input", @placeholder = "Escribe aquí tu mensaje...", @autocomplete = "off" })
-            <button type="submit" class="chat-submit" id="chat-submit"><i class="icon-arrow-thin-right"></i></button>
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(x => x.User.UserID)
+                @Html.HiddenFor(x => x.FunctionalityID)
+                @Html.TextBoxFor(x => x.Request, new { @id = "chat-input", @placeholder = "Escribe aquí tu mensaje...", @autocomplete = "off" })
+                <button type="submit" class="chat-submit" id="chat-submit"><i class="icon-arrow-thin-right"></i></button>
             }
         </div>
     </div>
@@ -111,27 +111,11 @@
 
     function ResponseEffectivenessMeasurement(rsp) {
         if (rsp) {
-            msg_id++;
-            var str = "";
-            str += "<div id='cm-msg-" + msg_id + "' class='chat-msg bot' style='display: block;'>";
-            str += "	<div class='cm-msg-text'>";
-            str += "		<p>Comencemos eligiendo una funcionalidad:</p>";
-            str += "		<ul class='chatbox-options'>";
-            rsp.forEach(function (element) {
-                str += "	    <li data-value='" + element.FunctionalityID + "'>" + element.Name + "</li>";
-            });
-            str += "		</ul>";
-            str += "	</div>";
-            str += "</div>";
-
-            $('.chat-logs').append(str);
-
-            $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
-        } else {
-            console.log("is null");
+            if (rsp.isSatisfactorio) {
+            } else {
+            }
         }
     }
-
     $('.chat-circle').click(function () {
         $('.chat-circle svg').toggleClass('chatbox-icon-hide');
         $('.chatbox').toggleClass('show-chatbot hide-chatbot');
@@ -150,7 +134,7 @@
         $('.chat-topic').show().find('.chat-topic-selected').html(topic);
     });
 
-    $('body').on('click', '.chat-rate i', function () {
+    $('body').on('click', '.chat-rate .i-chat-rate', function () {
         $(this).addClass('selected').siblings().removeClass('selected');
     });
 </script>

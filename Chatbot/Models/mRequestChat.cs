@@ -21,7 +21,11 @@ namespace Models
         public string MessageResponse { get; set; }
         public List<mFunctionality> Functionality { get; set; }
     }
-
+    public class mCategoty
+    {
+        public int CategoryID { get; set; }
+        public string Name { get; set; }
+    }
     public class mFunctionality
     {
         public long FunctionalityID { get; set; }

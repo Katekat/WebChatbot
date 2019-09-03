@@ -3,40 +3,42 @@
 
 @if (Model.TypeResponse)
 {
-    <div id="cm-msg-0" class="chat-msg bot" style="display: block;">
+    <div id="cm-msg" class="chat-msg bot" style="display: block;">
         <div class="cm-msg-text">
             @Model.MessageResponse
             <ul class="chatbox-options">
-                <li><a href="@Model.Functionality.FirstOrDefault().URL" target="_blank">@Model.Functionality.FirstOrDefault().Description</a></li>
+                @foreach (var item in Model.Functionality)
+                {
+                    @*@Html.ActionLink(item.Description, item.URL, new { @target = "_blank" })*@
+                    <li><a target="_blank" href="@item.URL"> @item.Description</a></li>
+                }
             </ul>
         </div>
     </div>
     <div class='chat-rate'>
         Te resultó útil esta respuesta?
-        @using (Ajax.BeginForm("SetEffectivenessMeasurement", new AjaxOptions { HttpMethod = "POST", OnSuccess = "ResponseEffectivenessMeasurement", OnFailure = "" }))
-        {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(x => x.Functionality.FirstOrDefault().FunctionalityID)
-            @Html.Hidden("UserID")
-            @Html.Hidden("Like")
-            @Html.Hidden("Dislike")
-            <i class="icon-thumbs-up"></i>
-            <i class="icon-thumbs-down"></i>
-            <button type="submit">a</button>
-        }
+        @Ajax.ActionLink(" ", "SetEffectivenessMeasurement",
+         new { pUserID = ViewData["UserID"], pFunctionalityID = Model.Functionality.FirstOrDefault().FunctionalityID, pLike = true },
+         new AjaxOptions { HttpMethod = "POST", OnBegin = "", OnSuccess = "ResponseEffectivenessMeasurement", OnFailure = "" },
+         new { @class = "icon-thumbs-up i-chat-rate" })
+        @Ajax.ActionLink(" ", "SetEffectivenessMeasurement",
+            new { pUserID = ViewData["UserID"], pFunctionalityID = Model.Functionality.FirstOrDefault().FunctionalityID, pLike = false },
+            new AjaxOptions { HttpMethod = "POST", OnBegin = "", OnSuccess = "ResponseEffectivenessMeasurement", OnFailure = "", },
+            new { @class = "icon-thumbs-down i-chat-rate" })
     </div>
 }
 else
 {
-    <div id="cm-msg-0" class="chat-msg bot" style="display: block;">
+    <div id="cm-msg" class="chat-msg bot" style="display: block;">
         <div class="cm-msg-text">
             @Model.MessageResponse
             <ul class="chatbox-options">
-                @foreach (Models.mFunctionality item in ViewBag.Funtionalitys)
+                @foreach (Models.mCategoty item in ViewBag.Categories)
                 {
-                    <li data-value="@item.FunctionalityID">@item.Name</li>
+                    <li data-value="@item.CategoryID">@item.Name</li>
                 }
             </ul>
         </div>
     </div>
 }
+
