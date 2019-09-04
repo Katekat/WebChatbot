@@ -85,7 +85,7 @@
     };
 
     function ResponseMessageBot(rsp) {
-        //msg_id++;
+        msg_id++;
         //var str = "";
         //str += "<div id='cm-msg-" + msg_id + "' class='chat-msg bot' style='display: block;'>";
         //str += "	<div class='cm-msg-text'>";
@@ -133,6 +133,19 @@
         $('#FunctionalityID').val($(this).data('value'));
         $('.chat-topic').show().find('.chat-topic-selected').html(topic);
     });
+
+    $('body').on('click', '.cm-msg-text .chatbox-options li', function () {
+        $('#FunctionalityID').val($(this).data('value'));
+        var str = "";
+        str += "    <div id='cm-msg' class='chat-msg bot' style='display: block;'>";
+        str += "        <div class='cm-msg-text'>";
+        str += "            Dime en qué puedo ayudarte con respecto a <strong class='chat-topic-selected'>" + $(this).html() + "</strong>.";
+        str += "        </div>";
+        str += "    </div>";
+        $('.chat-logs').append(str);
+        $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+    });
+
 
     $('body').on('click', '.chat-rate .i-chat-rate', function () {
         $(this).addClass('selected').siblings().removeClass('selected');

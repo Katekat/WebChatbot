@@ -3,7 +3,7 @@
 
 @if (Model.TypeResponse)
 {
-    <div id="cm-msg" class="chat-msg bot" style="display: block;">
+    <div id="cm-msg"  class="chat-msg bot" style="display: block;">
         <div class="cm-msg-text">
             @Model.MessageResponse
             <ul class="chatbox-options">
@@ -26,6 +26,17 @@
             new AjaxOptions { HttpMethod = "POST", OnBegin = "", OnSuccess = "ResponseEffectivenessMeasurement", OnFailure = "", },
             new { @class = "icon-thumbs-down i-chat-rate" })
     </div>
+    <div id="cm-msg" class="chat-msg bot" style="display: block;">
+        <div class="cm-msg-text">
+            <ul class="chatbox-options">
+                @foreach (Models.mCategoty item in ViewBag.Categories)
+                {
+                    <li data-value="@item.CategoryID">@item.Name</li>
+                }
+            </ul>
+        </div>
+    </div>
+
 }
 else
 {

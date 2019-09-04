@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using AccesoDatos;
@@ -42,10 +43,9 @@ namespace Chatbot.Controllers
             try
             {
                 ViewData["UserID"] = requestChat.User.UserID;
-                ViewData["Like"] = false;
-                ViewData["Dislike"] = false;
-
+               
                 string pQuestion = RemoveDiacritics(requestChat.Request);
+                pQuestion = CleanInput(pQuestion);
                 Lrequest = acBot.Getanswer(pQuestion, Convert.ToInt16(requestChat.FunctionalityID));
                 mResponseChat responseChat = new mResponseChat();
 
@@ -53,7 +53,7 @@ namespace Chatbot.Controllers
                 {
                     responseChat.TypeResponse = false;
                     responseChat.MessageResponse = " No encontré resultados para tu consulta. Prueba ingresando otra consulta " +
-                        "o seleccionando otra funcionalidad. Si no, puedes enviar un mensaje a nuestros asesores, que te responderán dentro de las próximas 24 hs";
+                        "o seleccionando otra categoría. Si no, puedes enviar un mensaje a nuestros asesores, que te responderán dentro de las próximas 24 hs";
                     ViewBag.Categories = GetCategories();
                 }
                 else
@@ -75,6 +75,7 @@ namespace Chatbot.Controllers
                     }
 
                 }
+                ViewBag.Categories = GetCategories();
                 return PartialView("_ResponseMessage", responseChat);
             }
             catch (Exception ex)
@@ -84,7 +85,6 @@ namespace Chatbot.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public JsonResult SetEffectivenessMeasurement(long pUserID, long pFunctionalityID, bool pLike)
         {
             try
@@ -128,7 +128,21 @@ namespace Chatbot.Controllers
             return stringBuilder.ToString();
         }
 
-        private List<mCategoty> GetCategories()
+        public static string CleanInput(string strIn)
+        {
+            // Reemplaza caracteres invalidos de la cadena
+            try
+            {
+                return Regex.Replace(strIn, @"[^0-9A-Za-z' ']", "", RegexOptions.None);
+            }
+          
+            catch (RegexMatchTimeoutException)
+            {
+                return String.Empty;
+            }
+        }
+
+            private List<mCategoty> GetCategories()
         {
             return acBot.Getcategories();
         }
