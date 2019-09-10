@@ -24,6 +24,7 @@ namespace Chatbot.Controllers
         {
             try
             {
+                ViewData["msgBot"] = 0;
                 ViewBag.Categories = GetCategories();
                 return PartialView("_ChatBot", new mRequestChat() { User = new mUser() { UserID = 1, Name = "Luis" } });
             }
@@ -32,7 +33,7 @@ namespace Chatbot.Controllers
                 throw ex;
             }
         }
-    
+
 
         [HttpPost]
         [ValidateInput(true)]
@@ -43,7 +44,7 @@ namespace Chatbot.Controllers
             try
             {
                 ViewData["UserID"] = requestChat.User.UserID;
-               
+
                 string pQuestion = RemoveDiacritics(requestChat.Request);
                 pQuestion = CleanInput(pQuestion);
                 Lrequest = acBot.Getanswer(pQuestion, Convert.ToInt16(requestChat.FunctionalityID));
@@ -75,6 +76,7 @@ namespace Chatbot.Controllers
                     }
 
                 }
+                ViewData["msgBot"] = Convert.ToInt32(ViewData["msgBot"]) + 1;
                 ViewBag.Categories = GetCategories();
                 return PartialView("_ResponseMessage", responseChat);
             }
@@ -135,14 +137,14 @@ namespace Chatbot.Controllers
             {
                 return Regex.Replace(strIn, @"[^0-9A-Za-z' ']", "", RegexOptions.None);
             }
-          
+
             catch (RegexMatchTimeoutException)
             {
                 return String.Empty;
             }
         }
 
-            private List<mCategoty> GetCategories()
+        private List<mCategoty> GetCategories()
         {
             return acBot.Getcategories();
         }

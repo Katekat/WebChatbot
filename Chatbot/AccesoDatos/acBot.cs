@@ -11,7 +11,7 @@ namespace AccesoDatos
 {
     public class acBot
     {
-        private SqlCommand cmdComando;
+        //private SqlCommand cmdComando;
 
         public bool SaveAnswer(long pUserID, long pFunctionalityID, bool pLike)
         {
@@ -134,7 +134,7 @@ namespace AccesoDatos
             DataSet dsFunctionalities = new DataSet();
             //Obtener funcionalidades por cod de categoria 
             dsFunctionalities = Getfunctionalities(pCodFunctionality);
-            string[] words = pQuestion.ToUpper().Split(' ');  //Separar la cadena 
+            string[] words = pQuestion.Trim().ToUpper().Split(' ');  //Separar la cadena 
 
             List<mFunctionality> list = new List<mFunctionality>();
 
@@ -153,24 +153,11 @@ namespace AccesoDatos
                 }).ToList();
 
                
+               
                 foreach (var item in result)
                 {
-                    foreach (var word in item.Word)
-                    {
-                        if (item.Word.Count() >= 7)
-                        {
-                            cantword = 7;
-                        }
-                        else
-                        {
-                            cantword = item.Word.Count();
-                        }
-                        if (word.Equals(true))
-                        {
-                            cant = cant + 1;
-                        }
-
-                    }
+                    cantword = (item.Word.Count());
+                    cant = item.Word.Count(x => x.Equals(true));
 
                     if (((cant / cantword) * 100) >= 35)
                     {
@@ -189,8 +176,8 @@ namespace AccesoDatos
                     }
                     cant = 0;
 
-                 }
-               
+                }
+
             }
             catch (Exception)
             {

@@ -34,7 +34,7 @@
         </div>
 
         <div class="chat-logs">
-            <div id="cm-msg-0" class="chat-msg bot" style="display: block;">
+            <div id="cm-msg-bot-@ViewData["msgBot"]" class="chat-msg bot" style="display: block;">
                 <div class="cm-msg-text">Dime en qué puedo ayudarte<span class="chat-topic"> con respecto a <strong class="chat-topic-selected"></strong></span>.</div>
             </div>
         </div>
@@ -58,6 +58,7 @@
     // CHATBOT
 
     var msg_id = 0;
+    var msg_id_bot=@ViewData["msgBot"];
 
     function BeginSendRequest() {
         var msg = $('#chat-input').val();
@@ -82,6 +83,7 @@
         $('#chat-input').val('');
         $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
         //$('#FunctionalityID').val(0);
+       
     };
 
     function ResponseMessageBot(rsp) {
@@ -105,8 +107,9 @@
         //    str += "</div>";
         //}
         $('.chat-logs').append(rsp);
+        $('#cm-msg-bot-' + msg_id_bot).focus();
         //$('#cm-msg-' + msg_id + ',#cm-msg-' + msg_id + ' + .chat-rate').hide().fadeIn(300);
-        $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+        //$('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
     };
 
     function ResponseEffectivenessMeasurement(rsp) {
@@ -134,8 +137,7 @@
         $('.chat-topic').show().find('.chat-topic-selected').html(topic);
     });
 
-    $('body').on('click', '.cm-msg-text .chatbox-options li', function () {
-        $('#FunctionalityID').val($(this).data('value'));
+    $('body').on('click', '.li-option', function () {
         var str = "";
         str += "    <div id='cm-msg' class='chat-msg bot' style='display: block;'>";
         str += "        <div class='cm-msg-text'>";
@@ -144,6 +146,7 @@
         str += "    </div>";
         $('.chat-logs').append(str);
         $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+        $('#FunctionalityID').val($(this).data('value'));
     });
 
 
