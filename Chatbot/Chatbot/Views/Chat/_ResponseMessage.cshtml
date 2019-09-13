@@ -3,14 +3,14 @@
 
 @if (Model.TypeResponse)
 {
-    <div id="cm-msg-bot-@ViewData["msgBot"]" class="chat-msg bot" style="display: block;" tabindex="-1">
+    <div id="cm-msg-bot-msgBot" class="chat-msg bot a" style="display: block;" tabindex="-1">
         <div class="cm-msg-text">
             @Model.MessageResponse
             <ul class="chatbox-options">
                 @foreach (var item in Model.Functionality)
                 {
                     @*@Html.ActionLink(item.Description, item.URL, new { @target = "_blank" })*@
-                    <li><a target="_blank" href="@item.URL"> @item.Description</a></li>
+                    <a id="msg-bot" style="text-decoration:none" target="_blank" href="@item.URL"> @item.Description</a>
                 }
             </ul>
         </div>
@@ -28,31 +28,30 @@
     </div>
     <div id="cm-msg" class="chat-msg bot" style="display: block;">
         <div class="cm-msg-text">
+            <p>Tiene alguna otra consulta?</p>
             <ul class="chatbox-options">
-                @foreach (Models.mCategoty item in ViewBag.Categories)
-                {
-                    <li class="li-option" data-value="@item.CategoryID">@item.Name</li>
-                }
+                @*@Html.HiddenFor(x => x.Confirm)*@
+                <li class="li-option-rep" data-value="1">SI</li>
+                <li class="li-option-rep-no" data-value="0">NO</li>
             </ul>
         </div>
+    </div>
+    <div id='cmc-msg' class='chat-msg bot' style='display: block;'>
+      
     </div>
 
 }
 else
 {
-    <div id="cm-msg" class="chat-msg bot" style="display: block;">
-        <div class="cm-msg-text">
-            @Model.MessageResponse
-            <ul class="chatbox-options">
-                @foreach (Models.mCategoty item in ViewBag.Categories)
-                {
-                    <li class="li-option" data-value="@item.CategoryID">@item.Name</li>
-                }
-            </ul>
+    <div id="cm-msg-bot-msgBot" class="chat-msg bot a" style="display: block;">
+            <div class="cm-msg-text">
+                @Model.MessageResponse
+                <ul class="chatbox-options">
+                    @foreach (Models.mCategoty item in ViewBag.Categories)
+                    {
+                        <li class="li-option" data-value="@item.CategoryID">@item.Name</li>
+                    }
+                </ul>
+            </div>
         </div>
-    </div>
 }
-
-<script>
-    msg_id_bot = @ViewData["msgBot"];
-</script>

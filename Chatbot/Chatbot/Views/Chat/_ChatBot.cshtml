@@ -34,7 +34,7 @@
         </div>
 
         <div class="chat-logs">
-            <div id="cm-msg-bot-@ViewData["msgBot"]" class="chat-msg bot" style="display: block;">
+            <div id="cm-msg-bot" class="chat-msg bot" style="display: block;">
                 <div class="cm-msg-text">Dime en qué puedo ayudarte<span class="chat-topic"> con respecto a <strong class="chat-topic-selected"></strong></span>.</div>
             </div>
         </div>
@@ -58,7 +58,7 @@
     // CHATBOT
 
     var msg_id = 0;
-    var msg_id_bot=@ViewData["msgBot"];
+    var msg_id_bot=0;
 
     function BeginSendRequest() {
         var msg = $('#chat-input').val();
@@ -83,7 +83,7 @@
         $('#chat-input').val('');
         $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
         //$('#FunctionalityID').val(0);
-       
+
     };
 
     function ResponseMessageBot(rsp) {
@@ -107,9 +107,13 @@
         //    str += "</div>";
         //}
         $('.chat-logs').append(rsp);
-        $('#cm-msg-bot-' + msg_id_bot).focus();
+        //$('#cm-msg-bot-msgbot').removeattr('id');
+        //$('.chat-msg bot a').attr('id', 'cm-msg-bot-msgbot' + msg_id);
+        //$('#cm-msg-bot-msgbot' + msg_id).focus();
+
+        //$("html, body").delay(0).animate({ scrollTop: $('#msg-bot-' + msg_id_bot).offset().top - 200 }, 1000);
         //$('#cm-msg-' + msg_id + ',#cm-msg-' + msg_id + ' + .chat-rate').hide().fadeIn(300);
-        //$('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+        $('#cm-msg-bot-msgBot').stop().animate({ scrollTop: $('#cm-msg-bot-msgBot').offset().top -1}, 1000);
     };
 
     function ResponseEffectivenessMeasurement(rsp) {
@@ -149,6 +153,21 @@
         $('#FunctionalityID').val($(this).data('value'));
     });
 
+    $('body').on('click', '.li-option-rep-no', function () {
+        var variable_from_server = @Html.Raw(Json.Encode(ViewBag.Categories));
+
+        var str = ' ';
+            str += "<div class='cm-msg-text'>";
+            str += "<ul class='chatbox-options'>";
+            $.each(variable_from_server, function (index, value) {
+                str += "<li class='li-option' data-value='" + value.CategoryID + "'>"+value.Name+"</li>";
+            });
+            str += " </ul>";
+            str += "</div>";
+
+        $('#cmc-msg').append(str);
+        $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+    });
 
     $('body').on('click', '.chat-rate .i-chat-rate', function () {
         $(this).addClass('selected').siblings().removeClass('selected');

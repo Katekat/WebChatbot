@@ -25,7 +25,7 @@ namespace AccesoDatos
                 SqlCommand cmdComando = new SqlCommand(strSentenciaSQL, cnnConexion);
                 cmdComando.CommandType = CommandType.StoredProcedure;
                 cmdComando.Parameters.Add("@cod_usuario", SqlDbType.Int).Value = pUserID;
-                cmdComando.Parameters.Add("@cod_funcionalidad", SqlDbType.Int).Value = pFunctionalityID;
+                cmdComando.Parameters.Add("@id_funcionalidad", SqlDbType.Int).Value = pFunctionalityID;
                 cmdComando.Parameters.Add("@respuesta", SqlDbType.Bit).Value = pLike;
 
 
@@ -81,7 +81,7 @@ namespace AccesoDatos
 
                 SqlCommand cmdComando = new SqlCommand(strSentenciaSQL, cnnConexion);
                 cmdComando.CommandType = CommandType.StoredProcedure;
-                cmdComando.Parameters.Add("@Cod_Categoria", SqlDbType.Int).Value = pCodfunctionalities;
+                cmdComando.Parameters.Add("@idCategoria", SqlDbType.Int).Value = pCodfunctionalities;
                 SqlDataAdapter adpAdapter = new SqlDataAdapter(cmdComando);
 
                 adpAdapter.Fill(dsConsulta, "consulta");
@@ -144,7 +144,7 @@ namespace AccesoDatos
                 {
                     FunctionalityID = x.Field<int>("IdFuncionalidad"),
                     Descripcion = x.Field<string>("Descripcion"),
-                    CategoriaID = x.Field<int>("CodCategoria"),
+                    CategoriaID = x.Field<int>("idCategoria"),
                     URL = x.Field<string>("Url"),
                     //Coincidencias = new
                     //{
@@ -152,8 +152,6 @@ namespace AccesoDatos
                     //}
                 }).ToList();
 
-               
-               
                 foreach (var item in result)
                 {
                     cantword = (item.Word.Count());
@@ -179,7 +177,7 @@ namespace AccesoDatos
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;

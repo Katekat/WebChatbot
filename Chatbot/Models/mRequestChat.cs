@@ -20,6 +20,7 @@ namespace Models
         public bool TypeResponse { get; set; }
         public string MessageResponse { get; set; }
         public List<mFunctionality> Functionality { get; set; }
+
     }
     public class mCategoty
     {

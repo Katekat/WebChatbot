@@ -232,6 +232,27 @@ html, body, h1, h2, h3, h4, h5, h6, p, li, span, a, input, button {
             box-shadow: rgba(0,0,0,.05) 0 2px 2px;
         }
 
+    .chatbox-options a {
+        display: block;
+        margin: 7px 5px;
+        flex-grow: 1;
+        border-radius: 30px;
+        border: 2px solid #fff;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all .2s ease-in-out;
+        padding: 8px 15px;
+        font-size: 13px;
+        letter-spacing: .3px;
+    }
+
+        .chatbox-options a:hover {
+            color: #00a9e0;
+            background: #fff;
+            box-shadow: rgba(0,0,0,.05) 0 2px 2px;
+        }
+
 .cm-msg-text .chatbox-options {
     margin: 10px -5px 0;
 }
@@ -243,6 +264,17 @@ html, body, h1, h2, h3, h4, h5, h6, p, li, span, a, input, button {
     }
 
         .cm-msg-text .chatbox-options li:hover {
+            background: #00a9e0;
+            color: #fff;
+        }
+
+    .cm-msg-text .chatbox-options a {
+        border: 1px solid #00a9e0;
+        color: #00a9e0;
+        font-weight: 400;
+    }
+
+        .cm-msg-text .chatbox-options a:hover {
             background: #00a9e0;
             color: #fff;
         }

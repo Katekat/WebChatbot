@@ -76,7 +76,7 @@ namespace Chatbot.Controllers
                     }
 
                 }
-                ViewData["msgBot"] = Convert.ToInt32(ViewData["msgBot"]) + 1;
+                //TempData["msgBot"] = Convert.ToInt32(TempData["msgBot"]) + 1;
                 ViewBag.Categories = GetCategories();
                 return PartialView("_ResponseMessage", responseChat);
             }
