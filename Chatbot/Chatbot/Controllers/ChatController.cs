@@ -24,7 +24,6 @@ namespace Chatbot.Controllers
         {
             try
             {
-                ViewData["msgBot"] = 0;
                 ViewBag.Categories = GetCategories();
                 return PartialView("_ChatBot", new mRequestChat() { User = new mUser() { UserID = 1, Name = "Luis" } });
             }
@@ -62,21 +61,10 @@ namespace Chatbot.Controllers
                     responseChat.TypeResponse = true;
                     responseChat.MessageResponse = "Encontré estos resultados para tu consulta";
 
-                    var m = from word in Lrequest
-                            where Convert.ToDecimal(word.Coincidencia) == 100
-                            select word;
-                    if (m.Count() >= 1)
-                    {
-                        responseChat.Functionality = m.ToList();
-                    }
-                    else
-                    {
-                        responseChat.Functionality = Lrequest.OrderByDescending(x => x.Coincidencia).Take(3).ToList();// maximo 3 respuesa al usuario
-
-                    }
+                    responseChat.Functionality = Lrequest.OrderByDescending(x => x.Coincidencia).Take(3).ToList();// máximo 3 respuesa al usuario
 
                 }
-                //TempData["msgBot"] = Convert.ToInt32(TempData["msgBot"]) + 1;
+                ViewData["msgBot"] = Convert.ToInt32(ViewData["msgBot"]) + 1;
                 ViewBag.Categories = GetCategories();
                 return PartialView("_ResponseMessage", responseChat);
             }

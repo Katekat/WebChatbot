@@ -58,13 +58,19 @@
     // CHATBOT
 
     var msg_id = 0;
-    var msg_id_bot=0;
 
     function BeginSendRequest() {
         var msg = $('#chat-input').val();
-        if (msg.trim() == '' || $('#chat-input-form #FunctionalityID').val() == 0)
+        if (msg.trim() == '')
             return false;
-        else {
+        else if ($('#chat-input-form #FunctionalityID').val() == 0)
+        {
+            warningMessage();
+            printCategories();
+            return false;
+        }
+        else
+        {
             RequestMessgeUser(msg);
             return true;
         }
@@ -82,8 +88,6 @@
         $('#cm-msg-' + msg_id).hide().fadeIn(300);
         $('#chat-input').val('');
         $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
-        //$('#FunctionalityID').val(0);
-
     };
 
     function ResponseMessageBot(rsp) {
@@ -109,11 +113,11 @@
         $('.chat-logs').append(rsp);
         //$('#cm-msg-bot-msgbot').removeattr('id');
         //$('.chat-msg bot a').attr('id', 'cm-msg-bot-msgbot' + msg_id);
-        //$('#cm-msg-bot-msgbot' + msg_id).focus();
+        //$('.msgBot:last').focus();
 
         //$("html, body").delay(0).animate({ scrollTop: $('#msg-bot-' + msg_id_bot).offset().top - 200 }, 1000);
         //$('#cm-msg-' + msg_id + ',#cm-msg-' + msg_id + ' + .chat-rate').hide().fadeIn(300);
-        $('#cm-msg-bot-msgBot').stop().animate({ scrollTop: $('#cm-msg-bot-msgBot').offset().top -1}, 1000);
+        $('.msgBot:last').stop().animate({ scrollTop: $('.msgBot:last').offset().top -1}, 1000);
     };
 
     function ResponseEffectivenessMeasurement(rsp) {
@@ -123,6 +127,7 @@
             }
         }
     }
+
     $('.chat-circle').click(function () {
         $('.chat-circle svg').toggleClass('chatbox-icon-hide');
         $('.chatbox').toggleClass('show-chatbot hide-chatbot');
@@ -138,38 +143,60 @@
         $('.chatbox-overlay, .chat-logs, .chat-input').slideToggle(500);
         var topic = $(this).html();
         $('#FunctionalityID').val($(this).data('value'));
+        $('#chat-input').focus();
         $('.chat-topic').show().find('.chat-topic-selected').html(topic);
     });
 
     $('body').on('click', '.li-option', function () {
         var str = "";
-        str += "    <div id='cm-msg' class='chat-msg bot' style='display: block;'>";
+        str += "    <div class='chat-msg bot' style='display: block;'>";
         str += "        <div class='cm-msg-text'>";
         str += "            Dime en qué puedo ayudarte con respecto a <strong class='chat-topic-selected'>" + $(this).html() + "</strong>.";
         str += "        </div>";
         str += "    </div>";
         $('.chat-logs').append(str);
         $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+        $('#chat-input').val('');
+        $('#chat-input').focus();
         $('#FunctionalityID').val($(this).data('value'));
     });
 
     $('body').on('click', '.li-option-rep-no', function () {
-        var variable_from_server = @Html.Raw(Json.Encode(ViewBag.Categories));
-
-        var str = ' ';
-            str += "<div class='cm-msg-text'>";
-            str += "<ul class='chatbox-options'>";
-            $.each(variable_from_server, function (index, value) {
-                str += "<li class='li-option' data-value='" + value.CategoryID + "'>"+value.Name+"</li>";
-            });
-            str += " </ul>";
-            str += "</div>";
-
-        $('#cmc-msg').append(str);
-        $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+        printCategories();
     });
 
     $('body').on('click', '.chat-rate .i-chat-rate', function () {
         $(this).addClass('selected').siblings().removeClass('selected');
     });
+
+    function warningMessage() {
+        var str = "";
+            str += "    <div class='chat-msg bot' style='display: block;'>";
+            str += "        <div class='cm-msg-text'>";
+            str += "            Debe seleccionar una opcion para continuar.";
+            str += "        </div>";
+            str += "    </div>";
+        $('.cmc-msg:last').append(str);
+        $('#chat-input').val('');
+        $('#chat-input').focus();
+        $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+    }
+
+    function printCategories() {
+        var variable_from_server = @Html.Raw(Json.Encode(ViewBag.Categories));
+
+        var str = ' ';
+            str += "<div class='cm-msg-text'>";
+            str += "    <ul class='chatbox-options'>";
+            $.each(variable_from_server, function (index, value) {
+                str += "    <li class='li-option' data-value='" + value.CategoryID + "'>"+value.Name+"</li>";
+            });
+            str += "    </ul>";
+            str += "</div>";
+        $('#FunctionalityID').val(0);
+        $('.cmc-msg:last').append(str).show();
+        $('.chat-logs').stop().animate({ scrollTop: $('.chat-logs')[0].scrollHeight }, 1000);
+        $('#chat-input').val('');
+        $('#chat-input').focus();
+    }
 </script>

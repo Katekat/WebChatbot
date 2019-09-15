@@ -11,8 +11,7 @@ namespace AccesoDatos
 {
     public class acBot
     {
-        //private SqlCommand cmdComando;
-
+       
         public bool SaveAnswer(long pUserID, long pFunctionalityID, bool pLike)
         {
             try
@@ -135,7 +134,22 @@ namespace AccesoDatos
             //Obtener funcionalidades por cod de categoria 
             dsFunctionalities = Getfunctionalities(pCodFunctionality);
             string[] words = pQuestion.Trim().ToUpper().Split(' ');  //Separar la cadena 
+            cantword = words.Length; // Para mantener la cantidad original de palabras ingresadas
 
+            var plurilizacion = (from item in words
+                                 where item.Length > 4 && Convert.ToChar(item.Substring(item.Length - 1)) != 'S'  //Evaluo si ya no viene una palabra en plural
+                                 select new
+                                 {
+                                     item = item + "S"
+                                 }).ToList();
+
+
+            foreach (var item in plurilizacion)
+            {
+                pQuestion = pQuestion + " " + item.item.ToString(); //Se le agrega a la cadena original las otras palabras en plural a buscar
+            }
+
+            words = pQuestion.Trim().ToUpper().Split(' '); // Arreglo con todas las palabras a buscar
             List<mFunctionality> list = new List<mFunctionality>();
 
             try
@@ -154,10 +168,10 @@ namespace AccesoDatos
 
                 foreach (var item in result)
                 {
-                    cantword = (item.Word.Count());
+                    // cantword = (item.Word.Count());
                     cant = item.Word.Count(x => x.Equals(true));
-
-                    if (((cant / cantword) * 100) >= 35)
+                    decimal probabilidad = ((cant / cantword) * 100);
+                    if (probabilidad >= 35)
                     {
                         list.Add(new mFunctionality()
                         {
@@ -165,15 +179,14 @@ namespace AccesoDatos
                             CategoriaID = item.CategoriaID,
                             Description = item.Descripcion,
                             URL = item.URL,
-                            Coincidencia = (cant / cantword).ToString("N2") // para luego mostrar la coincidencia mayor en la view si no existe una de 100% 
-                                                                            //se deben mostrar al menos 3
-                                                                            //o se muestra la que sea igual a 100% y si no hay ninguna mayor a 100 sino que varian de 
-                                                                            // 35 en adelante muestran 3 opciones 
+                            Coincidencia = probabilidad.ToString("N2") // para luego mostrar la coincidencia mayor en la view si no existe una de 100% 
+                                                                       //se deben mostrar al menos 3
 
                         });
                     }
                     cant = 0;
-
+                    if (probabilidad == 100)
+                        break;
                 }
 
             }
