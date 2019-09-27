@@ -75,25 +75,22 @@ namespace Chatbot.Controllers
         }
 
         [HttpPost]
-        public JsonResult SetEffectivenessMeasurement(long pUserID, long pFunctionalityID, bool pLike)
+        public JsonResult SetEffectivenessMeasurement(long pUserID, long pFunctionalityID, bool pLike, long pCategoriaID)
         {
             try
             {
-
-                bool resp = acBot.SaveAnswer(pUserID, pFunctionalityID, pLike);
-                if (resp)
+                if (acBot.SaveAnswer(pUserID, pFunctionalityID, pLike, pCategoriaID))
                 {
-
-                    return Json(new { isSatisfactorio = true, pUserID, pFunctionalityID, pLike }, JsonRequestBehavior.AllowGet);
+                    return Json(new { isSatisfactorio = true }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json(new { isSatisfactorio = false }, JsonRequestBehavior.AllowGet);
+                    return Json(new { isSatisfactorio = false, message = "" }, JsonRequestBehavior.AllowGet);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Json(ex, JsonRequestBehavior.DenyGet);
+                return Json(new { isSatisfactorio = false, message = "" }, JsonRequestBehavior.AllowGet);
             }
         }
 
