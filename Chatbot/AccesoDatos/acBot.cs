@@ -12,7 +12,7 @@ namespace AccesoDatos
     public class acBot
     {
        
-        public bool SaveAnswer(long pUserID, long pFunctionalityID, bool pLike)
+        public bool SaveAnswer(long pUserID, long pFunctionalityID, bool pLike, long pCategoriaID)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace AccesoDatos
                 cmdComando.Parameters.Add("@cod_usuario", SqlDbType.Int).Value = pUserID;
                 cmdComando.Parameters.Add("@id_funcionalidad", SqlDbType.Int).Value = pFunctionalityID;
                 cmdComando.Parameters.Add("@respuesta", SqlDbType.Bit).Value = pLike;
-
+                cmdComando.Parameters.Add("@id_categoria ", SqlDbType.Int).Value = pCategoriaID;
 
                 SqlDataAdapter adpAdapter = new SqlDataAdapter(cmdComando);
 
@@ -50,7 +50,7 @@ namespace AccesoDatos
             if (pData.Tables[0].Rows.Count != 0)
             {
 
-                cod = Convert.ToInt16(pData.Tables[0].Rows[0]["Column1"].ToString());
+                cod = Convert.ToInt16(pData.Tables[0].Rows[0]["respuesta"].ToString());
                 if (cod == 1)
                 {
                     return true;
@@ -131,18 +131,19 @@ namespace AccesoDatos
             decimal cant = 0;
             decimal cantword = 0;
             DataSet dsFunctionalities = new DataSet();
+            List<mFunctionality> list = new List<mFunctionality>();
             //Obtener funcionalidades por cod de categoria 
             dsFunctionalities = Getfunctionalities(pCodFunctionality);
             string[] words = pQuestion.Trim().ToUpper().Split(' ');  //Separar la cadena 
             cantword = words.Length; // Para mantener la cantidad original de palabras ingresadas
-
-            var plurilizacion = (from item in words
-                                 where item.Length > 4 && Convert.ToChar(item.Substring(item.Length - 1)) != 'S'  //Evaluo si ya no viene una palabra en plural
+            try
+            {
+                var plurilizacion = (from item in words
+                                     //where item.Length > 4 && Convert.ToChar(item.Substring(item.Length - 1)) != 'S'  //Evaluo si ya no viene una palabra en plural
                                  select new
                                  {
-                                     item = item + "S"
+                                     item = Obtenerpalabras(item)
                                  }).ToList();
-
 
             foreach (var item in plurilizacion)
             {
@@ -150,10 +151,9 @@ namespace AccesoDatos
             }
 
             words = pQuestion.Trim().ToUpper().Split(' '); // Arreglo con todas las palabras a buscar
-            List<mFunctionality> list = new List<mFunctionality>();
+           
 
-            try
-            {
+           
                 var result = dsFunctionalities.Tables[0].AsEnumerable().Select(x => new
                 {
                     FunctionalityID = x.Field<int>("IdFuncionalidad"),
@@ -198,5 +198,28 @@ namespace AccesoDatos
             return list;
 
         }
+        /// <summary>
+        /// Function para evaluar el caso de aplicar
+        /// plurilización o singularidad 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public string Obtenerpalabras(string item)
+        {
+            if (item.Length > 4 && Convert.ToChar(item.Substring(item.Length - 1)) != 'S')  //Evaluo si es singular y se aplica plurilización
+            {
+                item = item + "S";
+            }
+            else
+            {
+                if (item.Length > 2 && Convert.ToChar(item.Substring(item.Length - 1)) == 'S')// Evaluo si es plural y aplico singularidad 
+                {
+                    item = item.Substring(0, item.Length - 1);
+                }
+            }
+
+            return item;
+        }
     }
+
 }

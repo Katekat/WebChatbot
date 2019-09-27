@@ -17,12 +17,12 @@
     <div class='chat-rate'>
         Te resultó útil esta respuesta?
         @Ajax.ActionLink(" ", "SetEffectivenessMeasurement",
-         new { pUserID = ViewData["UserID"], pFunctionalityID = Model.Functionality.FirstOrDefault().FunctionalityID, pLike = true },
-         new AjaxOptions { HttpMethod = "POST", OnBegin = "", OnSuccess = "ResponseEffectivenessMeasurement", OnFailure = "" },
+         new { pUserID = ViewData["UserID"], pFunctionalityID = Model.Functionality.FirstOrDefault().FunctionalityID, pLike = true , pCategoriaID = Model.Functionality.FirstOrDefault().CategoriaID },
+         new AjaxOptions { HttpMethod = "POST", OnSuccess = "ResponseEffectivenessMeasurement" },
          new { @class = "icon-thumbs-up i-chat-rate" })
         @Ajax.ActionLink(" ", "SetEffectivenessMeasurement",
-            new { pUserID = ViewData["UserID"], pFunctionalityID = Model.Functionality.FirstOrDefault().FunctionalityID, pLike = false },
-            new AjaxOptions { HttpMethod = "POST", OnBegin = "", OnSuccess = "ResponseEffectivenessMeasurement", OnFailure = "", },
+            new { pUserID = ViewData["UserID"], pFunctionalityID = Model.Functionality.FirstOrDefault().FunctionalityID, pLike = false, pCategoriaID = Model.Functionality.FirstOrDefault().CategoriaID },
+            new AjaxOptions { HttpMethod = "POST", OnSuccess = "ResponseEffectivenessMeasurement" },
             new { @class = "icon-thumbs-down i-chat-rate" })
     </div>
     <div id="cm-msg" class="chat-msg bot cm-msg" style="display: block;">

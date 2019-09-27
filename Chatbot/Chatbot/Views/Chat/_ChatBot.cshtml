@@ -58,6 +58,7 @@
     // CHATBOT
 
     var msg_id = 0;
+    var rate = null;
 
     function BeginSendRequest() {
         var msg = $('#chat-input').val();
@@ -91,39 +92,23 @@
     };
 
     function ResponseMessageBot(rsp) {
-        msg_id++;
-        //var str = "";
-        //str += "<div id='cm-msg-" + msg_id + "' class='chat-msg bot' style='display: block;'>";
-        //str += "	<div class='cm-msg-text'>";
-        //str += rsp.responseChat.MessageResponse;
-        //if (rsp.responseChat.TypeResponse) {
-        //    str += "		<ul class='chatbox-options'>";
-        //    str += "			<li>" + rsp.responseChat.Functionality.Name + "</li>";
-        //    str += "		</ul>";
-        //}
-        //str += "	</div>";
-        //str += "</div>";
-        //if (rsp.responseChat.TypeResponse) {
-        //    str += "<div class='chat-rate'>";
-        //    str += "	Te resultó útil esta respuesta?";
-        //    str += "	<i class='icon-thumbs-up'></i>";
-        //    str += "	<i class='icon-thumbs-down'></i>";
-        //    str += "</div>";
-        //}
-        $('.chat-logs').append(rsp);
-        //$('#cm-msg-bot-msgbot').removeattr('id');
-        //$('.chat-msg bot a').attr('id', 'cm-msg-bot-msgbot' + msg_id);
-        //$('.msgBot:last').focus();
-
-        //$("html, body").delay(0).animate({ scrollTop: $('#msg-bot-' + msg_id_bot).offset().top - 200 }, 1000);
-        //$('#cm-msg-' + msg_id + ',#cm-msg-' + msg_id + ' + .chat-rate').hide().fadeIn(300);
-        $('.msgBot:last').stop().animate({ scrollTop: $('.msgBot:last').offset().top -1}, 1000);
+        if (rsp) {
+            $('.chat-logs').append(rsp);
+            $('.msgBot:last').stop().animate({ scrollTop: $('.msgBot:last').offset().top - 1 }, 1000);
+        } else {
+            if (rsp.isSatisfactorio) {
+                $('.chat-logs').append(rsp.message);
+            }
+        }
     };
 
     function ResponseEffectivenessMeasurement(rsp) {
         if (rsp) {
             if (rsp.isSatisfactorio) {
+                $(rate).parent().children('a').removeAttr("href").removeClass("chat-rate");
+                rate = null;
             } else {
+                $('.chat-logs').append(rsp.message);
             }
         }
     }
@@ -167,6 +152,7 @@
 
     $('body').on('click', '.chat-rate .i-chat-rate', function () {
         $(this).addClass('selected').siblings().removeClass('selected');
+        rate = $(this);
     });
 
     function warningMessage() {
