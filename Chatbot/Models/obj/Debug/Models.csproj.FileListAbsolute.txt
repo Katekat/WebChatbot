@@ -8,4 +8,3 @@ C:\Users\Katherine Flores\Source\Repos\WebChatbot\Chatbot\Models\bin\Debug\Model
 C:\Users\Katherine Flores\Source\Repos\WebChatbot\Chatbot\Models\obj\Debug\Models.csproj.CoreCompileInputs.cache
 C:\Users\Katherine Flores\Source\Repos\WebChatbot\Chatbot\Models\obj\Debug\Models.dll
 C:\Users\Katherine Flores\Source\Repos\WebChatbot\Chatbot\Models\obj\Debug\Models.pdb
-C:\Users\Katherine Flores\source\repos\WebChatbot\Chatbot\Models\obj\Debug\Models.csprojAssemblyReference.cache
