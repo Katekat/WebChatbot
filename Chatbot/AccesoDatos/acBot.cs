@@ -135,7 +135,7 @@ namespace AccesoDatos
             //Obtener funcionalidades por cod de categoria 
             dsFunctionalities = Getfunctionalities(pCodFunctionality);
             string[] words = pQuestion.Trim().ToUpper().Split(' ');  //Separar la cadena 
-            cantword = words.Length; // Para mantener la cantidad original de palabras ingresadas
+           
             try
             {
                 var plurilizacion = (from item in words
@@ -168,7 +168,7 @@ namespace AccesoDatos
 
                 foreach (var item in result)
                 {
-                    // cantword = (item.Word.Count());
+                    cantword = (item.Word.Count());
                     cant = item.Word.Count(x => x.Equals(true));
                     decimal probabilidad = ((cant / cantword) * 100);
                     if (probabilidad >= 35)
